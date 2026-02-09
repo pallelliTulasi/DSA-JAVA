@@ -1,31 +1,25 @@
-import java.util.ArrayList;
-import java.util.List;
-
 class Solution {
-    private List<Integer> sortedNodes = new ArrayList<>();
-
     public TreeNode balanceBST(TreeNode root) {
-        inorderTraversal(root);
-        return buildBalancedBST(0, sortedNodes.size() - 1);
+        List<Integer> vals = new ArrayList<>();
+
+        inorder(root, vals);
+        return build(vals, 0, vals.size() - 1);
     }
 
-    private void inorderTraversal(TreeNode node) {
+    private void inorder(TreeNode node, List<Integer> vals) {
         if (node == null) return;
-        
-        inorderTraversal(node.left);
-        sortedNodes.add(node.val);
-        inorderTraversal(node.right);
+        inorder(node.left, vals);
+        vals.add(node.val);
+        inorder(node.right, vals);
     }
 
-    private TreeNode buildBalancedBST(int start, int end) {
-        if (start > end) return null;
+    private TreeNode build(List<Integer> vals, int l, int r) {
+        if (l > r) return null;
 
-        int mid = start + (end - start) / 2;
-
-        TreeNode node = new TreeNode(sortedNodes.get(mid));
-
-        node.left = buildBalancedBST(start, mid - 1);
-        node.right = buildBalancedBST(mid + 1, end);
+        int m = (l + r) / 2;
+        TreeNode node = new TreeNode(vals.get(m));
+        node.left = build(vals, l, m - 1);
+        node.right = build(vals, m + 1, r);
 
         return node;
     }
